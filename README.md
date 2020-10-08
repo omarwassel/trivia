@@ -4,8 +4,6 @@ This is a simple application to collect different questions in several fields an
 
 In  trivia app you can see all questions from list tab, create a question from add tab and play a funny quiz with all questions categories or spasific category.  
 
-All backend code follows [PEP8 style guidelines](https://www.python.org/dev/peps/pep-0008/). 
-
 ## Getting Started
 
 ### Pre-requisites and Local Development 
