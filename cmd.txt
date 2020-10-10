@@ -1,4 +1,5 @@
 cd C:\Users\omar\Desktop\02_trivia_api\proj_env\Scripts
+activate.bat
 cd C:\Users\omar\Desktop\02_trivia_api\starter\backend
 set FLASK_APP=flaskr
 set FLASK_ENV=development

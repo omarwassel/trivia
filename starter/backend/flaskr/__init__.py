@@ -42,7 +42,7 @@ def create_app(test_config=None):
         try:
             return jsonify({'categories': get_formatted_categories()})
         except BaseException:
-            abort(405)
+            abort(404)
 
     @app.route('/questions', methods=['GET'])
     def get_questions():
@@ -75,7 +75,7 @@ def create_app(test_config=None):
             question = Question.query.get(id)
             question.delete()
 
-            return jsonify({"success": True})
+            return jsonify({"id": id,"success": True})
 
         except BaseException:
             abort(404)
@@ -88,17 +88,11 @@ def create_app(test_config=None):
             ans = data['answer']
             cat = data['category']
             dif = data['difficulty']
-            question_info = Question(
-                question=q, answer=ans, category=cat, difficulty=dif)
-            print(question_info.format())
-            if (q is None) or (ans is None) or (cat is None) or (dif is None):
-                abort(422)
-            else:
-                question_info.insert()
-
-            return jsonify({"success": True})
+            question_info = Question(q,ans, cat, dif)
+            question_info.insert()
+            return jsonify({"id": question_info.id,"success": True})
         except BaseException:
-            abort(422)
+            abort(500)
 
     @app.route('/questions/search', methods=['POST'])
     def get_searrch_questions():

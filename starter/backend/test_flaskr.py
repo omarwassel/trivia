@@ -41,19 +41,23 @@ class TriviaTestCase(unittest.TestCase):
     """
     categories
     """
-    def test_get_gategories(self):
+    def test_get_categories(self):
         res=self.client().get(('/categories'))
         data=json.loads(res.data)
-
         self.assertEqual(res.status_code,200)
         self.assertEqual(data['categories']['1'],'Science')
-        
+    
+    def test_get_categories_when_no_categories(self):
+        res=self.client().get(('/Categories'))
+        data=json.loads(res.data)
+        self.assertEqual(res.status_code,404)
+        self.assertFalse(data['success'])       
 
-    def test_get_gategory_questions_by_id(self):
+    def test_get_category_questions_by_id(self):
         res=self.client().get(('/categories/1/questions'))
         data=json.loads(res.data)
         self.assertEqual(res.status_code,200)
-        self.assertEqual(data['total_questions'],3)
+        self.assertTrue(data['total_questions'])
         self.assertEqual(data['current_category'],'Science')
     
     def test_get_gategory_questions_by_id_not_found(self):
@@ -61,7 +65,7 @@ class TriviaTestCase(unittest.TestCase):
         data=json.loads(res.data)
         self.assertEqual(res.status_code,404)
         self.assertEqual(data['error'],404)
-        self.assertEqual(data['success'],False)
+        self.assertFalse(data['success'])
 
     """
     questions
@@ -78,7 +82,18 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code,404)
         self.assertEqual(data['error'],404)
         self.assertEqual(data['success'],False)
-
+    
+    def test_create_question(self):
+        res=self.client().post(('/questions'),json={'question':'What is OOP ?','answer':'object oriented programming','category':'1','difficulty':3})
+        data=json.loads(res.data)
+        self.assertEqual(res.status_code,200)
+        self.assertTrue(data['success'])
+    
+    def test_create_question_with_wrong_format(self):
+        res=self.client().post(('/questions'),json={'quest':'What is OOP ?','answer':'object oriented programming','category':'Science','difficulty':3})
+        data=json.loads(res.data)
+        self.assertEqual(res.status_code,500)
+        self.assertFalse(data['success'])
 
     def test_delete_question(self):
         res=self.client().delete(('/questions/5'))
@@ -91,19 +106,6 @@ class TriviaTestCase(unittest.TestCase):
         data=json.loads(res.data)
         self.assertEqual(res.status_code,404)
         self.assertEqual(data['error'],404)
-        self.assertFalse(data['success'])
-
-    
-    def test_create_question(self):
-        res=self.client().post(('/questions'),json={'question':'What is OOP ?','answer':'object oriented programming','category':'Science','difficulty':3})
-        data=json.loads(res.data)
-        self.assertEquals(res.status_code,200)
-        self.assertTrue(data['success'])
-    
-    def test_create_question_with_wrong_format(self):
-        res=self.client().post(('/questions'),json={'quest':'What is OOP ?','answer':'object oriented programming','category':'Science','difficulty':3})
-        data=json.loads(res.data)
-        self.assertEqual(res.status_code,422)
         self.assertFalse(data['success'])
 
     def test_search_for_questions(self):
